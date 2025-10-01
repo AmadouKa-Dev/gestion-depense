@@ -1,0 +1,69 @@
+# ========== GLOBAL ==========
+
+# macOS
+.DS_Store
+
+# certificate/keys
+*.pem
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# environment variables
+.env*
+.env.*
+
+
+# ========== FRONTEND ==========
+# (ex: ./frontend)
+
+# node modules
+/frontend/node_modules/
+/frontend/.pnp
+/frontend/.pnp.*
+/frontend/.next/
+/frontend/out/
+/frontend/build
+
+# yarn v2+
+/frontend/.yarn/*
+!/frontend/.yarn/patches
+!/frontend/.yarn/plugins
+!/frontend/.yarn/releases
+!/frontend/.yarn/versions
+
+# tests
+/frontend/coverage
+
+# TypeScript
+/frontend/next-env.d.ts
+/frontend/*.tsbuildinfo
+
+# Vercel
+/frontend/.vercel
+
+
+# ========== BACKEND ==========
+# (ex: ./backend)
+
+# python virtual env
+/backend/env/
+/backend/venv/
+/backend/.venv/
+
+# compiled python files
+*.pyc
+__pycache__/
+
+# Django specific
+/backend/db.sqlite3
+/backend/staticfiles/
+.backend/media/
+
+# ========== IDE / EDITOR ==========
+.vscode/
+.idea/
+*.swp

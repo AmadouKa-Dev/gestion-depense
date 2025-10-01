@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:17
+    restart: always
+    env_file:
+      - backend/.env.prod
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  django-app:
+    build: ./backend
+    container_name: django-server
+    image: django-app-backend
+    env_file:
+      - backend/.env.prod
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - django-server:/app
+      - static_volume:/app/staticfiles
+
+  frontend:
+    build: ./frontend
+    container_name: react-frontend
+    image: react-app-frontend
+    env_file:
+      - frontend/.env.prod
+    ports:
+      - "3000:3000"
+    volumes:
+      - react-front:/app
+    depends_on:
+      - django-app
+
+  nginx:
+    image: nginx:stable-alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - static_volume:/static:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - django-app
+
+
+volumes:
+  postgres_data:
+  django-server:
+  static_volume:
+  react-front:
