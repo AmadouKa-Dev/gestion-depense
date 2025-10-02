@@ -16,6 +16,8 @@ yarn-error.log*
 .env*
 .env.*
 
+# config bdd et pgadmin
+docker-compose.dev.yml
 
 # ========== FRONTEND ==========
 # (ex: ./frontend)
