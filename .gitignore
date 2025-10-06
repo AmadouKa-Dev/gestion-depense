@@ -40,6 +40,14 @@ docker-compose.dev.yml
 # tests
 /frontend/coverage
 
+# Coverage
+htmlcov/
+.coverage
+coverage/
+*.cover
+.hypothesis/
+.pytest_cache/
+
 # TypeScript
 /frontend/next-env.d.ts
 /frontend/*.tsbuildinfo

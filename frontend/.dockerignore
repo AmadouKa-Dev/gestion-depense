@@ -1,0 +1,69 @@
+# Dépendances
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build Next.js
+.next/
+out/
+build/
+dist/
+
+# Cache et fichiers temporaires
+.swc/
+.cache/
+*.tsbuildinfo
+.eslintcache
+
+# Tests et coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Fichiers de développement
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# IDEs et éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+*.md
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Fichiers Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Logs
+logs/
+*.log
+
+# Autres
+.husky/
+.vercel/
+.turbo/

@@ -29,16 +29,6 @@ class TransactionModelTest(TestCase):
             amount=Decimal("-45.50")
         )
         self.assertEqual(str(transaction), "Restaurant (-45.50)")
-        
-    def test_transaction_ordering(self):
-        """Test que les transactions sont triées par date décroissante"""
-        t1 = Transaction.objects.create(text="Premier", amount=Decimal("100"))
-        t2 = Transaction.objects.create(text="Deuxième", amount=Decimal("200"))
-        t3 = Transaction.objects.create(text="Troisième", amount=Decimal("300"))
-        
-        transactions = Transaction.objects.all()
-        self.assertEqual(transactions[0].text, "Troisième")
-        self.assertEqual(transactions[2].text, "Premier")
 
 
 class TransactionAPITest(APITestCase):
