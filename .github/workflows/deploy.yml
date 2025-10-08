@@ -44,8 +44,6 @@ jobs:
           POSTGRES_USER: ${{ vars.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ vars.POSTGRES_DB }}
-        ports:
-          - 5432:5432
         options: >-
           --health-cmd="pg_isready -h postgres -p 5432"
           --health-interval=10s
@@ -70,7 +68,9 @@ jobs:
         run: pip install -r requirements.txt coverage
 
       - name: Check running containers (Postgres...)
-        run: docker ps -a
+        run: |
+          docker ps -a
+          docker logs $(docker ps -q --filter name=postgres)
 
       - name: Wait for Postgres
         run: |
