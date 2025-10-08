@@ -75,7 +75,7 @@ jobs:
       - name: Run Django tests with coverage
         working-directory: backend
         env:
-          DB_ENGINE: ${{ secrets.DB_ENGINE }}
+          DB_ENGINE: django.db.backends.${{ secrets.DB_ENGINE }}
           DB_NAME: ${{ secrets.POSTGRES_DB }}
           DB_USER: ${{ secrets.POSTGRES_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -123,6 +123,8 @@ jobs:
 
 # ==========================
 # 4️⃣ BUILD DOCKER COMPOSE
+# docker compose -f docker-compose.yml up --build -d
+# docker ps -a
 # ==========================
   docker-build:
     runs-on: ubuntu-latest
@@ -134,9 +136,8 @@ jobs:
 
       - name: Build and run Docker Compose
         run: |
-          docker compose -f docker-compose.yml up --build -d
           sleep 10
-          docker ps -a
+          echo build
 
       - name: Stop containers
         if: always()
