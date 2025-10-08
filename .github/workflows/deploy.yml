@@ -47,7 +47,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -h postgres"
+          --health-cmd="pg_isready -h postgres -p 5432"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -69,13 +69,17 @@ jobs:
         working-directory: backend
         run: pip install -r requirements.txt coverage
 
+      - name: Check running containers (Postgres...)
+        run: docker ps -a
+
       - name: Wait for Postgres
         run: |
           for i in {1..10}; do
-            pg_isready -h postgres -p 5432 && break
+            pg_isready -h postgres -p 5432 && echo "Postgres is ready" && exit 0
             echo "Waiting for Postgres..."
-            sleep 2
+            sleep 3
           done
+          echo "Postgres did not become ready in time" && exit 1
 
       - name: Run Django tests with coverage
         working-directory: backend
@@ -87,6 +91,7 @@ jobs:
           DB_HOST: ${{ vars.DB_HOST }}
           DB_PORT: ${{ vars.DB_PORT }}
         run: |
+          env
           python manage.py migrate
           coverage run manage.py test
           coverage html
