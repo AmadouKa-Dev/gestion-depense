@@ -84,8 +84,9 @@ jobs:
 
       - name: Run Django tests with coverage
         working-directory: backend
+        env:
+          DATABASE_URL: postgres://DB_USER:DB_PASSWORD@DB_HOST:5432/DB_NAME
         run: |
-          env
           python manage.py migrate
           coverage run manage.py test
           coverage html
