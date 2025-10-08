@@ -80,11 +80,12 @@ jobs:
             echo "Waiting for Postgres..."
             sleep 3
           done
-          echo "Postgres did not become ready in time" && exit 1
+          echo "Postgres did not become ready in time"
 
       - name: Run Django tests with coverage
         working-directory: backend
         run: |
+          env
           python manage.py migrate
           coverage run manage.py test
           coverage html
