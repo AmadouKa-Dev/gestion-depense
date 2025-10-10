@@ -18,7 +18,6 @@ WORKDIR /app
 # Copier les dépendances depuis le stage précédent
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-COPY .env.production .env
 
 # Build de l'application
 RUN npm run build
@@ -38,7 +37,6 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copier les fichiers de config et package
 COPY --from=build /app/next.config.ts ./
 COPY --from=build /app/package.json ./
-COPY --from=build /app/.env ./
 
 # Copier le build Next.js
 COPY --from=build /app/.next ./.next
