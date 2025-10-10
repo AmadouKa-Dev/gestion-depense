@@ -1,30 +1,48 @@
 # =========================
-# 1) Stage Build
+# 1) Stage Dependencies
 # =========================
-FROM node:22.19.0-bullseye AS builder
+FROM node:22.19.0-alpine AS deps
 WORKDIR /app
-COPY .env.production .env
-COPY package*.json ./
-RUN npm install
+
+# Copier uniquement les fichiers de dépendances
+COPY package.json package-lock.json* ./
+RUN npm ci --only=production && \
+    npm cache clean --force
+
+# =========================
+# 2) Stage Build
+# =========================
+FROM node:22.19.0-alpine AS build
+WORKDIR /app
+
+# Copier les dépendances depuis le stage précédent
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+COPY .env.production .env
+
+# Build de l'application
 RUN npm run build
 
 # =========================
-# 2) Stage Runtime
+# 3) Stage Runtime
 # =========================
 FROM node:22.19.0-alpine AS runner
 WORKDIR /app
 
-# Copier package.json et lockfile pour installer seulement les deps nécessaires
-COPY package*.json ./
-
-# Installer uniquement les deps de prod
-RUN npm ci --omit=dev --cache /tmp/empty-cache && rm -rf /tmp/empty-cache
-
-# Copier uniquement ce qui est nécessaire pour exécuter
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/next.config.ts ./next.config.ts
-COPY --from=builder /app/.env ./.env
 ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Copier les node_modules de production uniquement
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copier les fichiers de config et package
+COPY --from=build /app/next.config.ts ./
+COPY --from=build /app/package.json ./
+COPY --from=build /app/.env ./
+
+# Copier le build Next.js
+COPY --from=build /app/.next ./.next
+
 EXPOSE 3000
-CMD ["npm", "run", "start"]
+
+CMD ["npm", "start"]
