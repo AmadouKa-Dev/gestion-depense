@@ -240,8 +240,8 @@ jobs:
       - name: Build backend image
         working-directory: backend
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/gestion-depense:latest .
-          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/gestion-depense:latest ${{ secrets.DOCKERHUB_USERNAME }}/gestion-depense-backend:${{ github.sha }}
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/gestion-depense-backend:latest .
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/gestion-depense-backend:latest ${{ secrets.DOCKERHUB_USERNAME }}/gestion-depense-backend:${{ github.sha }}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/gestion-depense-backend:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/gestion-depense-backend:${{ github.sha }}
 
