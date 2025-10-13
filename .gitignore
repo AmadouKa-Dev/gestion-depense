@@ -6,6 +6,9 @@
 # certificate/keys
 *.pem
 
+# docker compose en local
+docker-compose.local.yml
+
 # logs
 npm-debug.log*
 yarn-debug.log*

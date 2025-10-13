@@ -3,8 +3,10 @@ services:
   db:
     image: postgres:17
     restart: always
-    env_file:
-      - backend/.env.prod
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h db"]
       interval: 10s
@@ -17,8 +19,14 @@ services:
     build: ./backend
     container_name: django-server
     image: django-app-backend
-    env_file:
-      - backend/.env.prod
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      DEBUG: ${DEBUG}
+      DB_ENGINE: ${DB_ENGINE}
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: db
     ports:
       - "8000:8000"
     depends_on:
@@ -38,8 +46,9 @@ services:
     build: ./frontend
     container_name: react-frontend
     image: react-app-frontend
-    env_file:
-      - frontend/.env.production
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      API_URL: ${API_URL}
     ports:
       - "3000:3000"
     volumes:
