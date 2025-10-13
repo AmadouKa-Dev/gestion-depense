@@ -66,12 +66,11 @@ class TransactionRegressionTest(APITestCase):
         Corrigé: Meta.ordering = ['-created_at']
         """
         # Créer 3 transactions avec un léger délai
-        import time
-        t1 = Transaction.objects.create(text="Premier", amount=Decimal("100"))
+        Transaction.objects.create(text="Premier", amount=Decimal("100"))
         time.sleep(0.01)
-        t2 = Transaction.objects.create(text="Deuxième", amount=Decimal("200"))
+        Transaction.objects.create(text="Deuxième", amount=Decimal("200"))
         time.sleep(0.01)
-        t3 = Transaction.objects.create(text="Troisième", amount=Decimal("300"))
+        Transaction.objects.create(text="Troisième", amount=Decimal("300"))
         
         response = self.client.get(self.list_url)
         
