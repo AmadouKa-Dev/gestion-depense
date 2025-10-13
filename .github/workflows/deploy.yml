@@ -138,9 +138,45 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint, test-backend, test-frontend]
 
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEBUG: ${{ vars.DEBUG }}
+      DB_ENGINE: ${{ vars.DB_ENGINE }}
+      DB_NAME: ${{ vars.POSTGRES_DB }}
+      DB_USER: ${{ vars.POSTGRES_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: db
+      DB_PORT: 5432
+      POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+      NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+      API_URL: ${{ vars.API_URL }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Create backend/.env.prod
+        run: |
+          mkdir -p backend
+          echo "DB_ENGINE=${DB_ENGINE}" > backend/.env.prod
+          echo "DB_NAME=${DB_NAME}" >> backend/.env.prod
+          echo "DB_USER=${DB_USER}" >> backend/.env.prod
+          echo "DB_PASSWORD=${DB_PASSWORD}" >> backend/.env.prod
+          echo "DB_HOST=${DB_HOST}" >> backend/.env.prod
+          echo "DB_PORT=${DB_PORT}" >> backend/.env.prod
+          echo "POSTGRES_USER=${POSTGRES_USER}" >> backend/.env.prod
+          echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> backend/.env.prod
+          echo "POSTGRES_DB=${POSTGRES_DB}" >> backend/.env.prod
+          echo "SECRET_KEY=${SECRET_KEY}" >> backend/.env.prod
+          echo "DEBUG=${DEBUG}" >> backend/.env.prod
+      
+      - name: Create frontend/.env.production
+        run: |
+          mkdir -p frontend
+          echo "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" > frontend/.env.production
+          echo "API_URL=${API_URL}" >> frontend/.env.production
 
       - name: Start containers for smoke test
         run: docker compose up -d --build
