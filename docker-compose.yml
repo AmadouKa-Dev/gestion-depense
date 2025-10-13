@@ -5,6 +5,10 @@ services:
     restart: always
     env_file:
       - backend/.env.prod
+    environment:
+      POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ vars.POSTGRES_DB }}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h db"]
       interval: 10s
@@ -19,11 +23,25 @@ services:
     image: django-app-backend
     env_file:
       - backend/.env.prod
+    environment:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEBUG: ${{ vars.DEBUG }}
+      DB_ENGINE: ${{ vars.DB_ENGINE }}
+      DB_NAME: ${{ vars.POSTGRES_DB }}
+      DB_USER: ${{ vars.POSTGRES_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: db
     ports:
       - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/transactions/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     volumes:
       - django-server:/app
       - static_volume:/app/staticfiles
@@ -34,12 +52,21 @@ services:
     image: react-app-frontend
     env_file:
       - frontend/.env.production
+    environment:
+      NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+      API_URL: ${{ vars.API_URL }}
     ports:
       - "3000:3000"
     volumes:
       - react-front:/app
     depends_on:
       - django-app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   nginx:
     image: nginx:stable-alpine
