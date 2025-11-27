@@ -33,9 +33,10 @@ FROM node:22.19.0-alpine AS runner
 WORKDIR /app
 
 # Copier uniquement les dépendances de PRODUCTION
-COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/standalone ./standalone
 COPY --from=build /app/.next/static ./.next/static
 COPY public ./public
+RUN mkdir -p .next/standalone/public && cp -r public/* .next/standalone/public/
 
 # Ajouter l'entrypoint
 COPY entrypoint.sh /entrypoint.sh
