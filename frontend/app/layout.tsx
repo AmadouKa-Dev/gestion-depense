@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from 'next/script'
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
@@ -25,6 +26,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="night">
+      <head>
+        <Script 
+          src="/runtime-config.js" 
+          strategy="beforeInteractive"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
