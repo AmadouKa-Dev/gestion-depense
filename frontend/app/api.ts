@@ -1,18 +1,23 @@
 import axios from "axios";
 
 const getBaseURL = (): string => {
-  // Côté serveur (SSR)
-  if (typeof window === 'undefined') {
-    const serverUrl = process.env.API_URL || 'http://backend:8000/';
-    return serverUrl.endsWith('/') ? `${serverUrl}api/` : `${serverUrl}/api/`;
+  // Côté client (navigateur)
+  if (typeof window !== 'undefined') {
+    // 1. Priorité : URL depuis runtime-config.js (injectée par K8s ConfigMap)
+    const runtimeUrl = window.RUNTIME_CONFIG?.API_URL;
+    
+    if (runtimeUrl && runtimeUrl !== '' && runtimeUrl !== 'placeholder') {
+      return runtimeUrl;
+    }
+    
+    // 2. Fallback : utilise l'origine actuelle (auto-détection)
+    return window.location.origin;
   }
   
-  // Côté client - utilise runtime config en priorité
-  const clientUrl = window.RUNTIME_CONFIG?.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/';
-  
-  console.log('🔧 Client API URL:', clientUrl); // Debug
-  
-  return clientUrl.endsWith('/') ? `${clientUrl}api/` : `${clientUrl}/api/`;
+  // Côté serveur (SSR/Server Components)
+  const serverUrl = process.env.API_URL || 'http://backend-service:8000';
+  console.log('🔧 SSR using API_URL:', serverUrl);
+  return serverUrl;
 };
 
 const api = axios.create({
@@ -23,9 +28,7 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined' && window.RUNTIME_CONFIG?.API_URL) {
     const runtimeUrl = window.RUNTIME_CONFIG.API_URL;
-    const baseURL = runtimeUrl.endsWith('/') ? `${runtimeUrl}api/` : `${runtimeUrl}/api/`;
-    config.baseURL = baseURL;
-    console.log('🔧 Using runtime baseURL:', baseURL);
+    config.baseURL = runtimeUrl.endsWith('/') ? `${runtimeUrl}api/` : `${runtimeUrl}/api/`;
   }
   return config;
 });
