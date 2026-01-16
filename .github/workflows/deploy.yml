@@ -201,7 +201,7 @@ jobs:
 # ==========================
 # 5 - BUILD & PUSH IMAGES BACKEND + FRONTEND
 # ==========================
-  docker-push:
+  build-push-deploy:
     runs-on: ubuntu-latest
     needs: smoke-test   
 
@@ -232,3 +232,23 @@ jobs:
           docker tag ${{ secrets.DOCKERHUB_USERNAME }}/gestion-depense-frontend:latest ${{ secrets.DOCKERHUB_USERNAME }}/gestion-depense-frontend:${{ github.sha }}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/gestion-depense-frontend:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/gestion-depense-frontend:${{ github.sha }}
+
+      - name: Checkout k3s repo
+        uses: actions/checkout@v4
+        with:
+          repository: AmadouKa-Dev/gestion-depense
+          token: ${{ secrets.K3S_REPO }}
+          path: k3s-repo
+
+      - name: Update Helm values
+        run: |
+          cd k3s-repo
+          sed -i 's/tag:.*/tag: \${{ github.sha }}/g' values.yaml
+
+      - name: Commit and push Helm change
+        run: |
+          cd k3s-repo
+          git config user.name "ci-bot"
+          git config user.email "ci@github.com"
+          git commit -am "chore: deploy k3s ${{ github.sha }}"
+          git push

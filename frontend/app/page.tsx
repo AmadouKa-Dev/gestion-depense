@@ -22,7 +22,7 @@ export default function Home() {
     try {
       const res = await api.get<Transaction[]>("transactions/")
       setTransactions(res.data)
-      toast.success("Transactions chargées")
+      toast.success("Transactions chargées test")
     } catch (error) {
       console.error("Erreur chargement transactions", error);
       toast.error("Erreur chargement transactions")
