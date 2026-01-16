@@ -243,8 +243,7 @@ jobs:
       - name: Update Helm's values
         run: |
           cd k3s-repo
-          ls -la
-          sed -i 's/tag:.*/tag: \${{ github.sha }}/g' values.yaml
+          sed -i 's/tag:.*/tag: ${{ github.sha }}/g' values.yaml
 
       - name: Commit and push Helm change
         run: |
