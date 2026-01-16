@@ -236,7 +236,7 @@ jobs:
       - name: Checkout k3s repo
         uses: actions/checkout@v4
         with:
-          repository: AmadouKa-Dev/gestion-depense
+          repository: AmadouKa-Dev/k3s-deploy
           token: ${{ secrets.K3S_REPO }}
           path: k3s-repo
 
@@ -244,7 +244,7 @@ jobs:
         run: |
           cd k3s-repo
           ls -la
-        #  sed -i 's/tag:.*/tag: \${{ github.sha }}/g' values.yaml
+          sed -i 's/tag:.*/tag: \${{ github.sha }}/g' values.yaml
 
       - name: Commit and push Helm change
         run: |
