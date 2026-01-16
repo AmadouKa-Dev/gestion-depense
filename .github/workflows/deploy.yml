@@ -240,7 +240,7 @@ jobs:
           token: ${{ secrets.K3S_REPO }}
           path: k3s-repo
 
-      - name: Update Helm values
+      - name: Update Helm's values
         run: |
           cd k3s-repo
           ls -la
